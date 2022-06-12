@@ -1,0 +1,83 @@
+#include <iostream>
+#include <string>
+using namespace std;
+char getLetter(int a) {
+    a = (char)a;
+    return a;
+}
+int getASCII(char a) {
+    a = (int)a;
+    return a;
+}
+bool isAlpha(string a) {
+    for (int i = 0; i < a.length(); i++) {
+        if ((a[i] < 'A' || a[i]>'Z') && (a[i] < 'a' || a[i]>'z'))
+            return false;
+    }
+    return true;
+}
+string properLength(string user_keyword, string secret) {
+    string help = secret;
+    for (int i = 0; i < user_keyword.length(); i++) {
+        help[i] = user_keyword[i];
+    }
+    if (user_keyword.length() < secret.length()) {
+        for (int i = user_keyword.length(); i < secret.length(); i++) {
+            int j = i % user_keyword.length();
+            help[i] = user_keyword[j];
+        }
+    }
+    return help;
+}
+int main()
+{
+    cout << "If you want to encrypt the message, type 1" << endl;
+    cout << "If you want to decipher the message, type 2" << endl;
+    int choice;
+    cin >> choice;
+    if(choice == 1)
+    cout << "Type in the message to encrypt (without space and only in uppercase):" << endl;
+    else
+    cout << "Type in the message to decipher (without space and only in uppercase):" << endl;
+    string secret; //secret holds the value of a message to encrypt in case1, value of a message to decipher in case 2
+    cin >> secret;
+    if (isAlpha(secret) == false) {
+        cout << "invalid input!";
+        return 0;
+    }
+    string input_keyword;
+    cin >> input_keyword;
+    if (isAlpha(input_keyword) == false) {
+        cout << "invalid input!";
+        return 0;
+    }
+    string keyword = properLength(input_keyword, secret); // keyword holds the key (thanks to properLength() it is the same length as a secret
+    string encryption = secret;
+    if (choice == 1) {
+        for (int i = 0; i < secret.length(); i++) {
+            int x1 = getASCII(secret[i]);
+            int x2 = getASCII(keyword[i]);
+            int x4 = x1 + x2 - 65;
+            if (x4 > 90) {
+                x4 -= 26;
+            }
+            encryption[i] = getLetter(x4);
+        }
+        cout << encryption;
+    }
+    if (choice == 2) {
+        for (int i = 0; i < secret.length(); i++) {
+            int x1 = getASCII(secret[i]);
+            int x2 = getASCII(keyword[i]);
+            int x4 = x1 - x2 + 65;
+            if (x4 < 65) {
+                x4 += 26;
+            }
+            encryption[i] = getLetter(x4);
+        }
+        cout << encryption;
+    }
+
+
+    return 0;
+}
